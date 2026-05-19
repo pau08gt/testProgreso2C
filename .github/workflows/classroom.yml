@@ -1,0 +1,109 @@
+name: Autograding por metodos
+
+on:
+  push:
+  repository_dispatch:
+
+permissions:
+  checks: write
+  contents: read
+  actions: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Metodo 1 - agregarLibro
+        id: agregar-libro
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 1 - agregarLibro
+          setup-command: ""
+          command: mvn -q -Dtest=AgregarLibroTest test
+          timeout: 10
+          max-score: 1
+
+      - name: Metodo 2 - buscarPorTituloSecuencial
+        id: buscar-titulo-secuencial
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 2 - buscarPorTituloSecuencial
+          setup-command: ""
+          command: mvn -q -Dtest=BuscarPorTituloSecuencialTest test
+          timeout: 10
+          max-score: 1
+
+      - name: Metodo 3 - ordenarPorPrecioDescendente
+        id: ordenar-precio-descendente
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 3 - ordenarPorPrecioDescendente
+          setup-command: ""
+          command: mvn -q -Dtest=OrdenarPorPrecioDescendenteTest test
+          timeout: 10
+          max-score: 1
+
+      - name: Metodo 4 - buscarPorCodigoBinario
+        id: buscar-codigo-binario
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 4 - buscarPorCodigoBinario
+          setup-command: ""
+          command: mvn -q -Dtest=BuscarPorCodigoBinarioTest test
+          timeout: 10
+          max-score: 1
+
+      - name: Metodo 5 - contarRecursivo
+        id: contar-recursivo
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 5 - contarRecursivo
+          setup-command: ""
+          command: mvn -q -Dtest=ContarRecursivoTest test
+          timeout: 10
+          max-score: 0.75
+
+      - name: Metodo 6 - sumaPreciosRecursiva
+        id: suma-precios-recursiva
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 6 - sumaPreciosRecursiva
+          setup-command: ""
+          command: mvn -q -Dtest=SumaPreciosRecursivaTest test
+          timeout: 10
+          max-score: 0.75
+
+      - name: Metodo 7 - precioPromedioRecursivo
+        id: precio-promedio-recursivo
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Metodo 7 - precioPromedioRecursivo
+          setup-command: ""
+          command: mvn -q -Dtest=PrecioPromedioRecursivoTest test
+          timeout: 10
+          max-score: 0.5
+
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          AGREGAR-LIBRO_RESULTS: "${{steps.agregar-libro.outputs.result}}"
+          BUSCAR-TITULO-SECUENCIAL_RESULTS: "${{steps.buscar-titulo-secuencial.outputs.result}}"
+          ORDENAR-PRECIO-DESCENDENTE_RESULTS: "${{steps.ordenar-precio-descendente.outputs.result}}"
+          BUSCAR-CODIGO-BINARIO_RESULTS: "${{steps.buscar-codigo-binario.outputs.result}}"
+          CONTAR-RECURSIVO_RESULTS: "${{steps.contar-recursivo.outputs.result}}"
+          SUMA-PRECIOS-RECURSIVA_RESULTS: "${{steps.suma-precios-recursiva.outputs.result}}"
+          PRECIO-PROMEDIO-RECURSIVO_RESULTS: "${{steps.precio-promedio-recursivo.outputs.result}}"
+        with:
+          runners: agregar-libro,buscar-titulo-secuencial,ordenar-precio-descendente,buscar-codigo-binario,contar-recursivo,suma-precios-recursiva,precio-promedio-recursivo
